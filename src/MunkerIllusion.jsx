@@ -7,9 +7,11 @@ class MunkerIllusion extends Component {
     this.myRef = React.createRef();
     this.widthRef = React.createRef();
     this.lightnessRef = React.createRef();
+    this.offsetRef = React.createRef();
 
     this.widthChange = this.widthChange.bind(this);
     this.lightnessChange = this.lightnessChange.bind(this);
+    this.offsetChange = this.offsetChange.bind(this);
 
     this.scaleBackground = chroma.scale(['blue', 'white']).correctLightness();
     this.scaleBar = chroma.scale(['yellow', 'white']).correctLightness();
@@ -23,20 +25,21 @@ class MunkerIllusion extends Component {
   }
 
   widthChange(event) {
-    let value = this.widthRef.current.value;
-    console.log('Boom Chuggg ... ' + value);
     this.go();
   }
   
   lightnessChange(event) {
-    let value = this.lightnessRef.current.value;
-    console.log('ligtness = ' + value);
+    this.go();
+  }
+
+  offsetChange(event) {
     this.go();
   }
 
   go() {
     let lightness = Number(this.lightnessRef.current.value);
     let width = Number(this.widthRef.current.value);
+    let offset = Number(this.offsetRef.current.value);
 
     let backgroundColor = this.scaleBackground(lightness).hex();
     let barColor = this.scaleBar(lightness).hex();
@@ -80,9 +83,9 @@ class MunkerIllusion extends Component {
                                               'line');
 
         cline2.setAttribute('x1', 200);
-        cline2.setAttribute('y1', y+width);
+        cline2.setAttribute('y1', y+width - offset*width);
         cline2.setAttribute('x2', 300);
-        cline2.setAttribute('y2', y+width);
+        cline2.setAttribute('y2', y+width - offset*width);
         
         cline2.setAttribute('stroke', objColor);
         cline2.setAttribute('stroke-width', width);        
@@ -92,28 +95,48 @@ class MunkerIllusion extends Component {
       }
 
     }
-
-    console.log('BOOM chugaluga');
   }
 
+  labeled_slider(label_text, min, max, step, defaultValue, ref, callback) {
+    return (
+          <div style={{display: 'block', width: '350px'}}>
+            <div style={{'display': 'table-cell', 'vertical-align': 'top',
+                 'width': '350px'}}>
+              <label style={{'font-size': '1.0rem', 'vertical-align': 'middle'}}>
+                {label_text}</label>
+              
+              <div style={{'width': '150px', 'float':'right'}}>
+                <input type="range" ref={ref} 
+                       min={min} max={max} step={step} defaultValue={defaultValue}
+                       onInput={callback}  onChange={callback}
+                       style={{'vertical-align':'middle'}}/>
+              </div>
+            </div>
+          </div>
+    );
+  }
   render() {
-    console.log('render render render');
     return (
       <div>
-        <label>Grating Width</label>
-        <input type="range" ref={this.widthRef} 
-               min="1" max="50" defaultValue="6"
-               onInput={this.widthChange}  onChange={this.widthChange}/>
-        <br/>
-        <label>Grating Lightness</label>
-        <input type="range" ref={this.lightnessRef} 
-               min="0" max="1" step="0.01" defaultValue="0"              
-               onInput={this.lightnessChange} onChange={this.lightnessChange}/>
+        <div style={{display: 'inline'}}>
 
-        
-        <svg width={this.width} height={this.height} ref={this.myRef}
-             style={{display: 'block', margin: 'auto'}}>
-        </svg>
+          {this.labeled_slider("Grating Width", 1, 50, 1, 5, 
+                               this.widthRef, this.widthChange)}
+
+          {this.labeled_slider("Background Lightness", 0, 1, 0.01, 0, 
+                               this.lightnessRef, this.lightnessChange)}
+
+          {this.labeled_slider("Grating Offset", 0, 1, 0.05, 0,
+                               this.offsetRef, this.offsetChange)}
+          
+        </div>
+
+        <div style={{display: 'block', margin: 'auto'}}>
+          <svg width={this.width} height={this.height} ref={this.myRef}
+               style={{display: 'block', margin: 'auto'}}>
+          </svg>
+        </div>
+
       </div>
     );
   }
