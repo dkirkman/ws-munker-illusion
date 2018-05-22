@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import chroma from 'chroma-js';
 
 class MunkerIllusion extends Component {
   constructor(props) {
@@ -9,6 +10,9 @@ class MunkerIllusion extends Component {
 
     this.widthChange = this.widthChange.bind(this);
     this.lightnessChange = this.lightnessChange.bind(this);
+
+    this.scaleBackground = chroma.scale(['blue', 'white']).correctLightness();
+    this.scaleBar = chroma.scale(['yellow', 'white']).correctLightness();
 
     this.width=350;
     this.height=200;
@@ -27,11 +31,15 @@ class MunkerIllusion extends Component {
   lightnessChange(event) {
     let value = this.lightnessRef.current.value;
     console.log('ligtness = ' + value);
+    this.go();
   }
 
   go() {
-    let backgroundColor = 'blue';
-    let barColor = 'yellow';
+    let lightness = Number(this.lightnessRef.current.value);
+    let width = Number(this.widthRef.current.value);
+
+    let backgroundColor = this.scaleBackground(lightness).hex();
+    let barColor = this.scaleBar(lightness).hex();
     let objColor = 'red';
 
     let svg = this.myRef.current;
@@ -39,9 +47,8 @@ class MunkerIllusion extends Component {
     svg.style.background = backgroundColor;
 
     var y;
-    let width = Number(this.widthRef.current.value);
-    console.log('width = ' + width);
-//    width = 6;
+
+
     for (y=width/2; y<=this.height+width; y+=width*2) {
       let line = document.createElementNS('http://www.w3.org/2000/svg',
                                           'line');
@@ -100,7 +107,7 @@ class MunkerIllusion extends Component {
         <br/>
         <label>Grating Lightness</label>
         <input type="range" ref={this.lightnessRef} 
-               min="0" max="1" step="0.01" defaultValue="1"              
+               min="0" max="1" step="0.01" defaultValue="0"              
                onInput={this.lightnessChange} onChange={this.lightnessChange}/>
 
         
