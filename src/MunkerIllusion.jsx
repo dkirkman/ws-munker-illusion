@@ -13,8 +13,16 @@ class MunkerIllusion extends Component {
     this.lightnessChange = this.lightnessChange.bind(this);
     this.offsetChange = this.offsetChange.bind(this);
 
-    this.scaleBackground = chroma.scale(['blue', 'white']).correctLightness();
-    this.scaleBar = chroma.scale(['yellow', 'white']).correctLightness();
+    let background = 'blue';
+    if (this.props.background !== undefined) background = this.props.background;
+
+    let bar = 'yellow';
+    if (this.props.bar !== undefined) bar = this.props.bar;
+
+    this.scaleBackground = 
+      chroma.scale([background, 'white']).correctLightness();
+    this.scaleBar = 
+      chroma.scale([bar, 'white']).correctLightness();
 
     this.width=350;
     this.height=200;
@@ -43,7 +51,9 @@ class MunkerIllusion extends Component {
 
     let backgroundColor = this.scaleBackground(lightness).hex();
     let barColor = this.scaleBar(lightness).hex();
+
     let objColor = 'red';
+    if (this.props.grating !== undefined) objColor = this.props.grating;
 
     let svg = this.myRef.current;
     svg.innerHTML = '';
@@ -120,13 +130,13 @@ class MunkerIllusion extends Component {
       <div>
         <div style={{display: 'inline'}}>
 
-          {this.labeled_slider("Grating Width", 1, 50, 1, 5, 
+          {this.labeled_slider("Stripe Width", 1, 50, 1, 5, 
                                this.widthRef, this.widthChange)}
 
           {this.labeled_slider("Background Lightness", 0, 1, 0.01, 0, 
                                this.lightnessRef, this.lightnessChange)}
 
-          {this.labeled_slider("Grating Offset", 0, 1, 0.05, 0,
+          {this.labeled_slider("Right Grating Offset", 0, 1, 0.05, 0,
                                this.offsetRef, this.offsetChange)}
           
         </div>
