@@ -127,7 +127,7 @@ class MunkerIllusion extends Component {
   }
   render() {
     return (
-      <div>
+      <p>
         <div style={{display: 'inline'}}>
 
           {this.labeled_slider("Stripe Width", 1, 50, 1, 5, 
@@ -147,7 +147,7 @@ class MunkerIllusion extends Component {
           </svg>
         </div>
 
-      </div>
+      </p>
     );
   }
 }
